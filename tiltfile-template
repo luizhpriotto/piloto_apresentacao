@@ -29,6 +29,12 @@ custom_build(
   ])
 
 #update remote cluster
-local_resource('Apply Remote Cluster', cmd='./atualizacluster.sh',
+local_resource('Iniciar Demo', cmd='./atualizacluster.sh',
     trigger_mode=TRIGGER_MODE_MANUAL, auto_init=False
 )
+
+#stop remote cluster
+local_resource('Parar Demo', cmd="kubectl get deployment --all-namespaces | awk 'match($6,/[0-9]+d/) {print $1}' | grep demo | kubectl scale deploy -n demo-materialescolar --replicas=0 --all",
+    trigger_mode=TRIGGER_MODE_MANUAL, auto_init=False
+)
+
