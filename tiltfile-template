@@ -1,0 +1,34 @@
+#path of docker compose
+docker_compose('docker-compose.yml')
+
+custom_build(
+  # Image name - must match the image in the docker-compose file
+  'luizhpriotto/material-escolar-beckend',
+
+  #custom command, in this case a script, you should pass the same os image as a parameter.
+  './kaniko.sh luizhpriotto/material-escolar-beckend',
+
+  # Docker context
+  '.',
+
+  #Fixind a tag, because Tilt generate a dynamic tag
+  tag = '${tag}',
+
+  #live updte for hot reload
+  live_update = [
+    
+    # Sync local files into the container.
+    sync('.', '/code'),
+
+    # Re-run npm install whenever package.json changes.
+    run('python -m pip --no-cache install -r requirements/production.txt', trigger='requirements/production.txt'),
+    run('python -m pip --no-cache install -r requirements/production.txt', trigger='requirements/base.txt'),
+    
+    # Restart the process to pick up the changed files.
+    restart_container()
+  ])
+
+#update remote cluster
+local_resource('Apply Remote Cluster', cmd='kubectl get nodes',
+    trigger_mode=TRIGGER_MODE_MANUAL, auto_init=False
+)

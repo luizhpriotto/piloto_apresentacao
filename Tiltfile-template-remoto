@@ -1,0 +1,39 @@
+#path of docker compose
+#docker_compose('docker-compose-tilt.yml')
+
+#valida se o contexts é o demo, para evitar possíveis problemas
+#load('ext://restart_process', 'custom_build_with_restart')
+allow_k8s_contexts('demo')
+
+load('ext://restart_process', 'custom_build_with_restart')
+
+k8s_yaml(['configmap.yaml', 'deployments.yaml', 'ingress.yaml', 'services.yaml'])
+
+custom_build_with_restart(
+  # Image name - must match the image in the docker-compose file
+  'luizhpriotto/material-escolar-beckend',
+
+  #custom command, in this case a script, you should pass the same os image as a parameter.
+  './kaniko.sh $EXPECTED_REF',
+
+  # Docker context
+  '.',
+
+  entrypoint='/bin/sh -c python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --reload --bind=0.0.0.0:8001 -w 8',
+  #Fixind a tag, because Tilt generate a dynamic tag
+
+  #live updte for hot reload
+  live_update = [
+    
+    # Sync local files into the container.
+    sync('.', '/code'),
+    #sync('.', '/var/www/app/'),
+
+    # Re-run npm install whenever package.json changes.
+    #run('npm i', trigger='package.json'),
+    #python -m pip --no-cache install -r requirements/production.txt
+    run('python -m pip --no-cache install -r requirements/production.txt', trigger='requirements/production.txt'),
+    run('python -m pip --no-cache install -r requirements/production.txt', trigger='requirements/base.txt')
+    #,
+    #run('/code/restart.sh')
+  ])
