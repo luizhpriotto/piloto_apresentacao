@@ -12,7 +12,7 @@ from sme_material_apps.core.api.urls import urlpatterns as core_url
 from sme_material_apps.proponentes.urls import urlpatterns as proponentes_url
 from sme_material_apps.custom_user.urls import urlpatterns as url_users
 
-schema_view = get_swagger_view(title="Titulo 1")
+schema_view = get_swagger_view(title="Novo Titulo")
 
 urlpatterns = [
                   # Django Admin, use {% url 'admin:index' %}
