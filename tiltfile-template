@@ -29,6 +29,6 @@ custom_build(
   ])
 
 #update remote cluster
-local_resource('Apply Remote Cluster', cmd='kubectl get nodes',
+local_resource('Apply Remote Cluster', cmd='./atualizacluster.sh',
     trigger_mode=TRIGGER_MODE_MANUAL, auto_init=False
 )

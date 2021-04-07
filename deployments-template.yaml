@@ -23,8 +23,9 @@ spec:
           image: luizhpriotto/material-escolar-beckend:${tag}
           imagePullPolicy: Always
           command:
-            - ./start.sh
-            - ./main.sh
+            - /bin/sh
+            - -c
+            - python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind=0.0.0.0:8001 -w 8 
           ports:
           - containerPort: 8001
             name: 8001tcp02

@@ -295,4 +295,4 @@ tilt_module/*
 deployments.yaml
 configmap.yaml
 tilt
-
+docker-compose.yml

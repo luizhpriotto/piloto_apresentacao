@@ -1,5 +1,5 @@
 #!/bin/bash
-kubectl run kaniko-$(openssl rand -hex 8) -n demo-materialescolar \
+kubectl run kaniko-$(openssl rand -hex 8) -n build \
 --rm --stdin=true \
 --image=gcr.io/kaniko-project/executor:latest --restart=Never \
 --overrides='{
